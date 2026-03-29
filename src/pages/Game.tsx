@@ -9,13 +9,14 @@ export default function Game() {
   // List of (two) randomly selectedc heroes for the current round stored as a state
   const [selectedHeroes, setSelectedHeroes] = useState<Hero[]>([]);
   const [selectedQuote, setSelectedQuote] = useState<Map<string, string>>();
-  const [userInput, setUserInput] = useState<string>("");
+  const [userSelectedHero, setUserSelectedHero] = useState<string | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
 
   function startNewRound() {
     const heroesPair = getTwoRandomHeroes();
     setSelectedHeroes(heroesPair);
     selectRandomQuote(heroesPair);
+    setUserSelectedHero(null);
   }
 
   function getTwoRandomHeroes(): Hero[] {
@@ -102,9 +103,17 @@ export default function Game() {
             <div className="w-full flex justify-center">
               <div className="inline-grid grid-cols-1 sm:grid-cols-2 gap-20">
                 {selectedHeroes.map((hero) => (
-                  <div
+                  <button
+                    type="button"
                     key={hero.name}
-                    className="flex flex-col items-center hover:scale-[1.05] transition-transform duration-200"
+                    onClick={() => setUserSelectedHero(hero.name)}
+                    className={[
+                      "flex flex-col items-center rounded-md transition-transform duration-200 hover:scale-[1.05] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4f7ec8]",
+                      userSelectedHero === hero.name
+                        ? "ring-2 ring-[#f99e1a] ring-offset-2 ring-offset-white"
+                        : "",
+                    ].join(" ")}
+                    aria-pressed={userSelectedHero === hero.name}
                   >
                     <div className="w-full max-w-[256px]">
                       <img
@@ -120,9 +129,24 @@ export default function Game() {
                         </h2>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
+            </div>
+
+            <div className="flex justify-center">
+              <button
+                type="button"
+                disabled={!userSelectedHero}
+                className={[
+                  "rounded-md px-8 py-2.5 text-sm font-semibold uppercase tracking-wide transition-colors duration-200",
+                  userSelectedHero
+                    ? "border border-[#f99e1a] bg-[#f99e1a] text-slate-900 hover:bg-[#ffb13f]"
+                    : "cursor-not-allowed border border-slate-300 bg-slate-200 text-slate-500",
+                ].join(" ")}
+              >
+                Submit
+              </button>
             </div>
           </div>
         )}
