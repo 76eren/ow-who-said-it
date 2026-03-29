@@ -21,8 +21,8 @@ export default function Game() {
   }
 
   function getTwoRandomHeroes(): Hero[] {
-    let hero1 = heroes[Math.floor(Math.random() * heroes.length)];
-    let hero2 = heroes[Math.floor(Math.random() * heroes.length)];
+    const hero1 = heroes[Math.floor(Math.random() * heroes.length)];
+    const hero2 = heroes[Math.floor(Math.random() * heroes.length)];
 
     if (hero1.name === hero2.name) {
       // If the same hero is selected twice, we need to select a different second hero
