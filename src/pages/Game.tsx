@@ -4,19 +4,20 @@ import type { Hero } from "../models/Hero";
 
 export default function Game() {
   const heroes = useHeroService();
-  const [points] = useState(0);
+  const [points, setPoints] = useState(0);
 
-  // List of (two) randomly selectedc heroes for the current round stored as a state
   const [selectedHeroes, setSelectedHeroes] = useState<Hero[]>([]);
   const [selectedQuote, setSelectedQuote] = useState<Map<string, string>>();
   const [userSelectedHero, setUserSelectedHero] = useState<string | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
 
   function startNewRound() {
     const heroesPair = getTwoRandomHeroes();
     setSelectedHeroes(heroesPair);
     selectRandomQuote(heroesPair);
     setUserSelectedHero(null);
+    setGameOver(false);
   }
 
   function getTwoRandomHeroes(): Hero[] {
@@ -57,6 +58,41 @@ export default function Game() {
     return highScore ? parseInt(highScore) : 0;
   }
 
+  function onSubmit() {
+    if (!selectedQuote || !userSelectedHero) {
+      return;
+    }
+
+    const correctHero = selectedQuote.keys().next().value as string | undefined;
+    if (!correctHero) {
+      return;
+    }
+
+    if (userSelectedHero === correctHero) {
+      setPoints((previousPoints) => {
+        const newPoints = previousPoints + 1;
+        if (newPoints > getUserHighScore()) {
+          localStorage.setItem("highScore", newPoints.toString());
+        }
+        return newPoints;
+      });
+
+      startNewRound();
+      return;
+    }
+
+    if (points > getUserHighScore()) {
+      localStorage.setItem("highScore", points.toString());
+    }
+
+    setPoints(0);
+    setGameStarted(false);
+    setGameOver(true);
+    setSelectedHeroes([]);
+    setSelectedQuote(undefined);
+    setUserSelectedHero(null);
+  }
+
   const quoteToGuess = selectedQuote
     ? Array.from(selectedQuote.values())[0]
     : "";
@@ -69,11 +105,17 @@ export default function Game() {
         </h1>
 
         {!gameStarted ? (
-          <div className="mt-8">
+          <div className="mt-8 space-y-4">
+            {gameOver ? (
+              <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                Game Over! You picked the wrong hero.
+              </p>
+            ) : null}
             <button
               className="rounded-md border border-[#f99e1a] bg-[#f99e1a] px-5 py-2.5 text-sm font-semibold uppercase tracking-wide text-slate-900 transition-colors duration-200 hover:bg-[#ffb13f]"
               onClick={() => {
                 setGameStarted(true);
+                setGameOver(false);
                 startNewRound();
               }}
             >
@@ -137,6 +179,7 @@ export default function Game() {
             <div className="flex justify-center">
               <button
                 type="button"
+                onClick={onSubmit}
                 disabled={!userSelectedHero}
                 className={[
                   "rounded-md px-8 py-2.5 text-sm font-semibold uppercase tracking-wide transition-colors duration-200",
