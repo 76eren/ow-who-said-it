@@ -8,7 +8,7 @@ import Home from "./pages/Home";
 function App() {
   return (
     <BrowserRouter>
-      <div className="ow-app min-h-screen text-slate-100 flex flex-col">
+      <div className="ow-app min-h-screen text-slate-900 flex flex-col">
         <Navbar />
         <main className="w-full flex-1">
           <Routes>

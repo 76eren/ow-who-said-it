@@ -2,9 +2,10 @@
 
 :root {
 	--ow-orange: #f99e1a;
-	--ow-deep: #0a1224;
-	--ow-mid: #131f38;
-	--ow-ink: #070b15;
+	--ow-blue: #4f7ec8;
+	--ow-cloud: #eef4ff;
+	--ow-sky: #dce8fb;
+	--ow-steel: #c2d3f1;
 }
 
 @layer base {
@@ -16,14 +17,14 @@
 
 	body {
 		@apply m-0;
-		background-color: var(--ow-ink);
+		background-color: var(--ow-cloud);
 	}
 }
 
 .ow-app {
 	background:
-		radial-gradient(circle at 15% 20%, rgb(249 158 26 / 20%), transparent 35%),
-		radial-gradient(circle at 85% 10%, rgb(97 125 181 / 24%), transparent 30%),
-		linear-gradient(180deg, var(--ow-mid) 0%, var(--ow-deep) 55%, var(--ow-ink) 100%);
+		radial-gradient(circle at 15% 18%, rgb(249 158 26 / 24%), transparent 38%),
+		radial-gradient(circle at 82% 8%, rgb(79 126 200 / 20%), transparent 36%),
+		linear-gradient(180deg, var(--ow-cloud) 0%, var(--ow-sky) 58%, var(--ow-steel) 100%);
 }
 
