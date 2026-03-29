@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+:root {
+	--ow-orange: #f99e1a;
+	--ow-deep: #0a1224;
+	--ow-mid: #131f38;
+	--ow-ink: #070b15;
+}
+
+@layer base {
+	html,
+	body,
+	#root {
+		min-height: 100%;
+	}
+
+	body {
+		@apply m-0;
+		background-color: var(--ow-ink);
+	}
+}
+
+.ow-app {
+	background:
+		radial-gradient(circle at 15% 20%, rgb(249 158 26 / 20%), transparent 35%),
+		radial-gradient(circle at 85% 10%, rgb(97 125 181 / 24%), transparent 30%),
+		linear-gradient(180deg, var(--ow-mid) 0%, var(--ow-deep) 55%, var(--ow-ink) 100%);
+}
+
