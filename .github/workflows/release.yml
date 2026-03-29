@@ -102,18 +102,20 @@ jobs:
           TAG: ${{ env.TAG }}
           GH_OWNER: ${{ github.repository_owner }}
         run: |
-          ssh -i ~/.ssh/id_ed25519 ${SSH_USERNAME}@${SERVER_IP} <<EOF
           set -eo pipefail
-          TAG_VALUE="${TAG}"
-          APP_PORT_VALUE="${APP_PORT:-8082}"
           GH_OWNER_LC="$(printf '%s' "${GH_OWNER}" | tr '[:upper:]' '[:lower:]')"
+          APP_PORT_VALUE="${APP_PORT:-8082}"
 
-          cat > "${DEPLOYMENT_SERVER_DIRECTORY}/.env" << EOROOT
-          TAG=${TAG_VALUE}
+          cat > .deploy.env <<EOF
+          TAG=${TAG}
           GH_OWNER=${GH_OWNER_LC}
           APP_PORT=${APP_PORT_VALUE}
-          EOROOT
           EOF
+
+          scp -i ~/.ssh/id_ed25519 .deploy.env \
+            ${SSH_USERNAME}@${SERVER_IP}:"${DEPLOYMENT_SERVER_DIRECTORY}/.env"
+
+          rm -f .deploy.env
 
       - name: Login to GHCR on server
         env:
