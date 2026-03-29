@@ -3,8 +3,8 @@ import { NavLink } from "react-router-dom";
 export default function Navbar() {
   const navItems = [
     { to: "/home", label: "Home", end: true },
-    { to: "/about", label: "About" },
     { to: "/game", label: "Game" },
+    { to: "/about", label: "About" },
   ];
 
   return (
