@@ -1,25 +1,132 @@
 import { useState } from "react";
 import useHeroService from "../services/useHeroService";
+import type { Hero } from "../models/Hero";
 
 export default function Game() {
   const heroes = useHeroService();
   const [points] = useState(0);
 
-  const totalQuotes = heroes.reduce((sum, hero) => {
-    return (
-      sum +
-      Object.values(hero.heroesQuotes).reduce((quoteSum, groupQuotes) => {
-        return quoteSum + groupQuotes.length;
-      }, 0)
+  // List of (two) randomly selectedc heroes for the current round stored as a state
+  const [selectedHeroes, setSelectedHeroes] = useState<Hero[]>([]);
+  const [selectedQuote, setSelectedQuote] = useState<Map<string, string>>();
+  const [userInput, setUserInput] = useState<string>("");
+  const [gameStarted, setGameStarted] = useState(false);
+
+  function startNewRound() {
+    const heroesPair = getTwoRandomHeroes();
+    setSelectedHeroes(heroesPair);
+    selectRandomQuote(heroesPair);
+  }
+
+  function getTwoRandomHeroes(): Hero[] {
+    let hero1 = heroes[Math.floor(Math.random() * heroes.length)];
+    let hero2 = heroes[Math.floor(Math.random() * heroes.length)];
+
+    if (hero1.name === hero2.name) {
+      // If the same hero is selected twice, we need to select a different second hero
+      do {
+        hero2 = heroes[Math.floor(Math.random() * heroes.length)];
+      } while (hero1.name === hero2.name);
+    }
+    return [hero1, hero2];
+  }
+
+  function selectRandomQuote(heroesPair: Hero[]) {
+    const randomHero =
+      heroesPair[Math.floor(Math.random() * heroesPair.length)];
+
+    const quoteCategories = Object.keys(randomHero.heroesQuotes);
+    const randomCategory =
+      quoteCategories[Math.floor(Math.random() * quoteCategories.length)];
+
+    const quotes = randomHero.heroesQuotes[randomCategory];
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+    // if the selected heroes name is inside of the quote, we want to replace it with "[Hero to guess]"
+    const quoteWithPlaceholder = randomQuote.replace(
+      new RegExp(`\\b${randomHero.name}\\b`, "gi"),
+      "[Hero to guess]",
     );
-  }, 0);
+
+    setSelectedQuote(new Map([[randomHero.name, quoteWithPlaceholder]]));
+  }
+
+  function getUserHighScore() {
+    let highScore = localStorage.getItem("highScore");
+    return highScore ? parseInt(highScore) : 0;
+  }
+
+  const quoteToGuess = selectedQuote
+    ? Array.from(selectedQuote.values())[0]
+    : "";
 
   return (
-    <div>
-      <h1 className="text-3xl underline font-bold">Game</h1>
-      <p className="mt-4">Loaded heroes: {heroes.length}</p>
-      <p>Total quotes: {totalQuotes}</p>
-      <p>Points: {points}</p>
-    </div>
+    <section className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="rounded-2xl border border-slate-200/80 bg-white/70 p-6 shadow-[0_18px_45px_rgba(34,58,97,0.14)] backdrop-blur-sm sm:p-8">
+        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+          Who Said It?
+        </h1>
+
+        {!gameStarted ? (
+          <div className="mt-8">
+            <button
+              className="rounded-md border border-[#f99e1a] bg-[#f99e1a] px-5 py-2.5 text-sm font-semibold uppercase tracking-wide text-slate-900 transition-colors duration-200 hover:bg-[#ffb13f]"
+              onClick={() => {
+                setGameStarted(true);
+                startNewRound();
+              }}
+            >
+              Start Game
+            </button>
+          </div>
+        ) : (
+          <div className="mt-7 space-y-8">
+            <div className="flex flex-wrap items-center gap-5 text-sm font-semibold text-slate-700">
+              <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5">
+                Points: {points}
+              </p>
+              <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5">
+                High Score: {getUserHighScore()}
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-slate-200 bg-slate-50/90 p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
+                Guess This Quote
+              </p>
+              <p className="mt-2 text-lg font-semibold leading-8 text-slate-900 sm:text-xl">
+                {quoteToGuess ? `"${quoteToGuess}"` : "Loading quote..."}
+              </p>
+            </div>
+
+            <div className="w-full flex justify-center">
+              <div className="inline-grid grid-cols-1 sm:grid-cols-2 gap-20">
+                {selectedHeroes.map((hero) => (
+                  <div
+                    key={hero.name}
+                    className="flex flex-col items-center hover:scale-[1.05] transition-transform duration-200"
+                  >
+                    <div className="w-full max-w-[256px]">
+                      <img
+                        src={hero.imageUrl}
+                        alt={hero.name}
+                        className="w-full h-auto object-contain"
+                        loading="lazy"
+                      />
+
+                      <div className="flex items-center justify-center rounded-b border border-t-0 border-[#9aa3ad] bg-white px-3 py-2">
+                        <h2 className="text-sm font-extrabold tracking-wide text-[#2b2f33]">
+                          {hero.name.toUpperCase()}
+                        </h2>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
   );
 }
