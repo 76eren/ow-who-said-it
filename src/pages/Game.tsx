@@ -85,17 +85,18 @@ export default function Game() {
       localStorage.setItem("highScore", points.toString());
     }
 
-    setPoints(0);
-    setGameStarted(false);
     setGameOver(true);
-    setSelectedHeroes([]);
-    setSelectedQuote(undefined);
-    setUserSelectedHero(null);
+  }
+
+  function restartAfterGameOver() {
+    setPoints(0);
+    startNewRound();
   }
 
   const quoteToGuess = selectedQuote
     ? Array.from(selectedQuote.values())[0]
     : "";
+  const correctHero = selectedQuote?.keys().next().value as string | undefined;
 
   return (
     <section className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
@@ -105,17 +106,12 @@ export default function Game() {
         </h1>
 
         {!gameStarted ? (
-          <div className="mt-8 space-y-4">
-            {gameOver ? (
-              <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
-                Game Over! You picked the wrong hero.
-              </p>
-            ) : null}
+          <div className="mt-8">
             <button
               className="rounded-md border border-[#f99e1a] bg-[#f99e1a] px-5 py-2.5 text-sm font-semibold uppercase tracking-wide text-slate-900 transition-colors duration-200 hover:bg-[#ffb13f]"
               onClick={() => {
                 setGameStarted(true);
-                setGameOver(false);
+                setPoints(0);
                 startNewRound();
               }}
             >
@@ -142,6 +138,12 @@ export default function Game() {
               </p>
             </div>
 
+            {gameOver ? (
+              <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                Game Over! The correct hero was <strong>{correctHero}</strong>.
+              </p>
+            ) : null}
+
             <div className="w-full flex justify-center">
               <div className="inline-grid grid-cols-1 sm:grid-cols-2 gap-20">
                 {selectedHeroes.map((hero) => (
@@ -149,9 +151,19 @@ export default function Game() {
                     type="button"
                     key={hero.name}
                     onClick={() => setUserSelectedHero(hero.name)}
+                    disabled={gameOver}
                     className={[
                       "flex flex-col items-center rounded-md transition-transform duration-200 hover:scale-[1.05] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4f7ec8]",
-                      userSelectedHero === hero.name
+                      gameOver ? "cursor-default hover:scale-100" : "",
+                      gameOver && hero.name === correctHero
+                        ? "ring-2 ring-emerald-500 ring-offset-2 ring-offset-white"
+                        : "",
+                      gameOver &&
+                      hero.name === userSelectedHero &&
+                      hero.name !== correctHero
+                        ? "ring-2 ring-red-500 ring-offset-2 ring-offset-white"
+                        : "",
+                      !gameOver && userSelectedHero === hero.name
                         ? "ring-2 ring-[#f99e1a] ring-offset-2 ring-offset-white"
                         : "",
                     ].join(" ")}
@@ -177,19 +189,29 @@ export default function Game() {
             </div>
 
             <div className="flex justify-center">
-              <button
-                type="button"
-                onClick={onSubmit}
-                disabled={!userSelectedHero}
-                className={[
-                  "rounded-md px-8 py-2.5 text-sm font-semibold uppercase tracking-wide transition-colors duration-200",
-                  userSelectedHero
-                    ? "border border-[#f99e1a] bg-[#f99e1a] text-slate-900 hover:bg-[#ffb13f]"
-                    : "cursor-not-allowed border border-slate-300 bg-slate-200 text-slate-500",
-                ].join(" ")}
-              >
-                Submit
-              </button>
+              {gameOver ? (
+                <button
+                  type="button"
+                  onClick={restartAfterGameOver}
+                  className="rounded-md border border-[#f99e1a] bg-[#f99e1a] px-8 py-2.5 text-sm font-semibold uppercase tracking-wide text-slate-900 transition-colors duration-200 hover:bg-[#ffb13f]"
+                >
+                  Play Again
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onSubmit}
+                  disabled={!userSelectedHero}
+                  className={[
+                    "rounded-md px-8 py-2.5 text-sm font-semibold uppercase tracking-wide transition-colors duration-200",
+                    userSelectedHero
+                      ? "border border-[#f99e1a] bg-[#f99e1a] text-slate-900 hover:bg-[#ffb13f]"
+                      : "cursor-not-allowed border border-slate-300 bg-slate-200 text-slate-500",
+                  ].join(" ")}
+                >
+                  Submit
+                </button>
+              )}
             </div>
           </div>
         )}
