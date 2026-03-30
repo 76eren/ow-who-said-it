@@ -1,12 +1,12 @@
 export default function About() {
   return (
-    <section className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="rounded-2xl border border-slate-200/80 bg-white/70 p-6 shadow-[0_18px_45px_rgba(34,58,97,0.14)] backdrop-blur-sm sm:p-8">
+    <section className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+      <div className="rounded-2xl border border-slate-200/80 bg-white/70 p-4 shadow-[0_18px_45px_rgba(34,58,97,0.14)] backdrop-blur-sm sm:p-8">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
           About This Project
         </p>
 
-        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+        <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
           OW Who Said It
         </h1>
 
@@ -15,7 +15,7 @@ export default function About() {
           which hero said each voice line.
         </p>
 
-        <div className="mt-8 rounded-xl border border-[#f99e1a]/45 bg-[#fff4e2]/70 p-5">
+        <div className="mt-6 rounded-xl border border-[#f99e1a]/45 bg-[#fff4e2]/70 p-4 sm:mt-8 sm:p-5">
           <h2 className="text-lg font-bold text-slate-900">About me</h2>
           <p className="mt-3 text-slate-700">
             I am Eren, a software engineer from the Netherlands. As you might

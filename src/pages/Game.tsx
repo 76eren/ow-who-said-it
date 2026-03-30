@@ -99,16 +99,16 @@ export default function Game() {
   const correctHero = selectedQuote?.keys().next().value as string | undefined;
 
   return (
-    <section className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="rounded-2xl border border-slate-200/80 bg-white/70 p-6 shadow-[0_18px_45px_rgba(34,58,97,0.14)] backdrop-blur-sm sm:p-8">
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    <section className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+      <div className="rounded-2xl border border-slate-200/80 bg-white/70 p-4 shadow-[0_18px_45px_rgba(34,58,97,0.14)] backdrop-blur-sm sm:p-8">
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
           Who Said It?
         </h1>
 
         {!gameStarted ? (
-          <div className="mt-8">
+          <div className="mt-6 sm:mt-8">
             <button
-              className="rounded-md border border-[#f99e1a] bg-[#f99e1a] px-5 py-2.5 text-sm font-semibold uppercase tracking-wide text-slate-900 transition-colors duration-200 hover:bg-[#ffb13f]"
+              className="rounded-md border border-[#f99e1a] bg-[#f99e1a] px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-slate-900 transition-colors duration-200 hover:bg-[#ffb13f] sm:text-sm"
               onClick={() => {
                 setGameStarted(true);
                 setPoints(0);
@@ -119,8 +119,8 @@ export default function Game() {
             </button>
           </div>
         ) : (
-          <div className="mt-7 space-y-8">
-            <div className="flex flex-wrap items-center gap-5 text-sm font-semibold text-slate-700">
+          <div className="mt-5 space-y-5 sm:mt-7 sm:space-y-8">
+            <div className="flex flex-wrap items-center gap-3 text-sm font-semibold text-slate-700 sm:gap-5">
               <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5">
                 Points: {points}
               </p>
@@ -129,11 +129,11 @@ export default function Game() {
               </p>
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-slate-50/90 p-5">
+            <div className="rounded-xl border border-slate-200 bg-slate-50/90 p-4 sm:p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
                 Guess This Quote
               </p>
-              <p className="mt-2 text-lg font-semibold leading-8 text-slate-900 sm:text-xl">
+              <p className="mt-2 wrap-break-word text-base font-semibold leading-7 text-slate-900 sm:text-xl sm:leading-8">
                 {quoteToGuess ? `"${quoteToGuess}"` : "Loading quote..."}
               </p>
             </div>
@@ -145,7 +145,7 @@ export default function Game() {
             ) : null}
 
             <div className="w-full flex justify-center">
-              <div className="inline-grid grid-cols-1 sm:grid-cols-2 gap-20">
+              <div className="inline-grid grid-cols-2 gap-3 sm:gap-20">
                 {selectedHeroes.map((hero) => (
                   <button
                     type="button"
@@ -169,16 +169,16 @@ export default function Game() {
                     ].join(" ")}
                     aria-pressed={userSelectedHero === hero.name}
                   >
-                    <div className="w-full max-w-[256px]">
+                    <div className="w-full max-w-36 sm:max-w-[256px]">
                       <img
                         src={hero.imageUrl}
                         alt={hero.name}
-                        className="w-full h-auto object-contain"
+                        className="h-auto max-h-44 w-full object-contain sm:max-h-none"
                         loading="lazy"
                       />
 
-                      <div className="flex items-center justify-center rounded-b border border-t-0 border-[#9aa3ad] bg-white px-3 py-2">
-                        <h2 className="text-sm font-extrabold tracking-wide text-[#2b2f33]">
+                      <div className="flex items-center justify-center rounded-b border border-t-0 border-[#9aa3ad] bg-white px-2 py-2 sm:px-3">
+                        <h2 className="text-xs font-extrabold tracking-wide text-[#2b2f33] sm:text-sm">
                           {hero.name.toUpperCase()}
                         </h2>
                       </div>
@@ -193,7 +193,7 @@ export default function Game() {
                 <button
                   type="button"
                   onClick={restartAfterGameOver}
-                  className="rounded-md border border-[#f99e1a] bg-[#f99e1a] px-8 py-2.5 text-sm font-semibold uppercase tracking-wide text-slate-900 transition-colors duration-200 hover:bg-[#ffb13f]"
+                  className="rounded-md border border-[#f99e1a] bg-[#f99e1a] px-8 py-2.5 text-xs font-semibold uppercase tracking-wide text-slate-900 transition-colors duration-200 hover:bg-[#ffb13f] sm:text-sm"
                 >
                   Play Again
                 </button>
@@ -203,7 +203,7 @@ export default function Game() {
                   onClick={onSubmit}
                   disabled={!userSelectedHero}
                   className={[
-                    "rounded-md px-8 py-2.5 text-sm font-semibold uppercase tracking-wide transition-colors duration-200",
+                    "rounded-md px-8 py-2.5 text-xs font-semibold uppercase tracking-wide transition-colors duration-200 sm:text-sm",
                     userSelectedHero
                       ? "border border-[#f99e1a] bg-[#f99e1a] text-slate-900 hover:bg-[#ffb13f]"
                       : "cursor-not-allowed border border-slate-300 bg-slate-200 text-slate-500",
